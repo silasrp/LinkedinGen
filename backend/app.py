@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler
 
-from workflow import generate_post
+from graph import run_pipeline
 
 
 class handler(BaseHTTPRequestHandler):
@@ -38,7 +38,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            final_post = generate_post(prompt.strip())
+            final_post = run_pipeline(prompt.strip())
             self._send_json(200, {"finalPost": final_post})
         except Exception as error:
             self._send_json(500, {"error": str(error)})
