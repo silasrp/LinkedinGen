@@ -54,7 +54,6 @@ def agent_draft_generator(state: AgentState) -> dict[str, Any]:
     On subsequent iterations it refines the draft using feedback from Agent 3.
     On the final iteration it sets `final_post` and signals completion.
     """
-    llm = llm
     iteration = state.get("iteration_count", 0)
     max_iter = state.get("max_iterations", 2)
     evaluation = state.get("evaluation", "")
@@ -137,7 +136,6 @@ def agent_web_researcher(state: AgentState) -> dict[str, Any]:
     Agent 2: Searches the web for information relevant to the current draft
     and returns a structured research report.
     """
-    llm = llm
     draft = state["current_draft"]
     query = state["user_query"]
     iteration = state.get("iteration_count", 1)
@@ -226,7 +224,6 @@ def agent_quality_evaluator(state: AgentState) -> dict[str, Any]:
     Agent 3: Scores the current draft across five quality dimensions and
     produces structured feedback for Agent 1 to act on.
     """
-    llm = llm
     draft = state["current_draft"]
     web_research = state.get("web_research", "No research available.")
     iteration = state.get("iteration_count", 1)
