@@ -1,9 +1,8 @@
-import gradio as gr
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langgraph.graph import END, StateGraph, MessagesState
 
-from typing import List, Sequence
+from typing import List
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from dotenv import load_dotenv
 from pathlib import Path
@@ -88,41 +87,8 @@ graph.add_conditional_edges("generate", should_continue)
 
 workflow = graph.compile()
 
-## QA Generator
 def generate_post(user_prompt: str) -> str:
     result = workflow.invoke({
         "messages": [HumanMessage(content=user_prompt)]
     })
     return result["messages"][-3].content # this is the end message before revisor acknowledgmenmt 
-
-# Define the interface
-with gr.Blocks() as linkgen:
-    gr.Markdown("# LinkedIn Post Generator")
-
-    chatbot = gr.Chatbot(height=500, label="Chat")
-    user_input = gr.Textbox(
-        label="Your request",
-        placeholder="Describe the LinkedIn post you want...",
-        lines=1,
-        max_lines=3,
-    )
-    clear = gr.Button("Clear")
-
-    def respond(message, history):
-        answer = generate_post(message)
-        history = history + [
-            {"role": "user", "content": message},
-            {"role": "assistant", "content": answer},
-        ]
-        return "", history
-
-    user_input.submit(
-        respond,
-        inputs=[user_input, chatbot],
-        outputs=[user_input, chatbot]
-    )
-
-    clear.click(lambda: [], inputs=None, outputs=chatbot)
-
-# Launch the interface
-linkgen.launch(server_name="127.0.0.1", server_port= 7860)
