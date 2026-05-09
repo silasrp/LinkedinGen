@@ -38,7 +38,8 @@ class handler(BaseHTTPRequestHandler):
             return
 
         try:
-            final_post = run_pipeline(prompt.strip())
+            final_state = run_pipeline(prompt.strip())
+            final_post = final_state["final_post"]
             self._send_json(200, {"finalPost": final_post})
         except Exception as error:
             self._send_json(500, {"error": str(error)})
