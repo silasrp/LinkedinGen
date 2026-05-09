@@ -6,13 +6,6 @@ from workflow import generate_post
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
-        if self.path != "/api/generate":
-            self.send_response(404)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": "Not found"}).encode("utf-8"))
-            return
-
         content_length = int(self.headers.get("Content-Length", "0"))
         raw_body = self.rfile.read(content_length) if content_length else b"{}"
 

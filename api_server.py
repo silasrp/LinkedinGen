@@ -3,7 +3,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-from backend.app import generate_post
+from backend.workflow import generate_post
 
 
 class ApiHandler(BaseHTTPRequestHandler):
