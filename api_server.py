@@ -1,6 +1,5 @@
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 from urllib.parse import urlparse
 
 from backend.workflow import generate_post

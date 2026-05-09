@@ -11,3 +11,7 @@ out
 .vercel
 dist
 coverage
+__pycache__
+__pycache__/api_server.cpython-312.pyc
+backend/__pycache__/app.cpython-312.pyc
+__pycache__/api_server.cpython-312.pyc
