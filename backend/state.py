@@ -32,6 +32,10 @@ class AgentState(TypedDict):
     """
 
     user_query: str
+    skill_1: str
+    skill_2: str
+    skill_3: str
+    skill_4: str    
     current_draft: str
     web_research: str
     evaluation: str

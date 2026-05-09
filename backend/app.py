@@ -1,6 +1,5 @@
 import json
 from http.server import BaseHTTPRequestHandler
-
 from graph import run_pipeline
 
 
@@ -33,12 +32,18 @@ class handler(BaseHTTPRequestHandler):
             payload = {}
 
         prompt = payload.get("prompt", "")
+        skills = payload.get("skills", [])
+
         if not isinstance(prompt, str) or not prompt.strip():
             self._send_json(400, {"error": "Please enter a prompt before generating a post."})
             return
 
+        if not isinstance(skills, list):
+            skills = []
+
         try:
-            final_state = run_pipeline(prompt.strip())
+            final_state = run_pipeline(prompt.strip(), skills=skills)
+
             final_post = final_state["final_post"]
             self._send_json(200, {"finalPost": final_post})
         except Exception as error:

@@ -24,6 +24,13 @@ export function LinkedInGenerator() {
   const [runs, setRuns] = useState<GenerationRun[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [skills, setSkills] = useState<[string, string, string, string]>([
+    "c# development",
+    "AI engineering",
+    "enterprise engineering",
+    "best practices for production deployment",
+  ]);
+
 
   async function handleSubmit() {
     const cleanPrompt = prompt.trim();
@@ -41,7 +48,7 @@ export function LinkedInGenerator() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: cleanPrompt }),
+        body: JSON.stringify({ prompt: cleanPrompt, skills, }),
       });
 
       const contentType = response.headers.get("content-type") || "";
@@ -82,8 +89,16 @@ export function LinkedInGenerator() {
 
         <PromptForm
           prompt={prompt}
+          skills={skills}
           isLoading={isLoading}
           onPromptChange={setPrompt}
+          onSkillChange={(index, value) => {
+            setSkills((current) => {
+              const next = [...current] as [string, string, string, string];
+              next[index] = value;
+              return next;
+            });         
+          }} 
           onSubmit={handleSubmit}
         />
 

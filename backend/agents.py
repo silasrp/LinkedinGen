@@ -41,11 +41,20 @@ Guidelines for a great LinkedIn post:
 - Tone: Professional but human — avoid corporate speak and clichés.
 - Emojis: Use sparingly (0-3 max) only if they add clarity or warmth.
 - Hashtags: 3-5 relevant hashtags at the very end.
-
+Make use of the following framework:
+1. Quality of Content - Professional Pillars
+1.1. Take in consideration that the user's expertise comprises: {skill_1}, {skill_2}, {skill_3}, {skill_4}.
+1.2. Consider producing commentaries on current trends or news in the user's field of expertise 
+1.3. Consider producing tutorials or short slide decks (carousels) that provide immediate value to peers
+2. Format
+2.1. Mix the format, choose between carousel for deep value or short text posts for quick takes.
+2.2. Use short scannable paragraphs and bullet points so it is easy to digest
+2.3. Replace corporate buzzwords with clear, direct language that shows how the user would actually think.
 When you receive evaluation feedback, incorporate it precisely before producing
 the next draft. Acknowledge every point of criticism.
 
-Return ONLY the finished LinkedIn post text — no preamble, no meta-commentary."""
+Return ONLY the finished LinkedIn post text — no preamble, no meta-commentary.
+"""
 
 
 def agent_draft_generator(state: AgentState) -> dict[str, Any]:
@@ -58,6 +67,13 @@ def agent_draft_generator(state: AgentState) -> dict[str, Any]:
     max_iter = state.get("max_iterations", 2)
     evaluation = state.get("evaluation", "")
     web_research = state.get("web_research", "")
+
+    draft_system_prompt = DRAFT_SYSTEM.format(
+        skill_1=state.get("skill_1", ""),
+        skill_2=state.get("skill_2", ""),
+        skill_3=state.get("skill_3", ""),
+        skill_4=state.get("skill_4", ""),
+    )    
 
     log_prefix = f"[Cycle {iteration + 1}/{max_iter}] Agent 1 (Draft Generator)"
 
@@ -83,7 +99,7 @@ def agent_draft_generator(state: AgentState) -> dict[str, Any]:
         )
 
     messages = [
-        SystemMessage(content=DRAFT_SYSTEM),
+        SystemMessage(content=draft_system_prompt),
         HumanMessage(content=user_prompt),
     ]
     response = llm.invoke(messages)
@@ -193,7 +209,7 @@ EVALUATION_SYSTEM = """You are a senior LinkedIn content coach and editor.
 Your role is to critically evaluate a LinkedIn post draft and provide
 actionable, specific feedback so the writer can improve it.
 
-Evaluate across these five dimensions (score each 1–10):
+Evaluate across these five dimensions (score each 1-10):
 1. Hook strength    — Does the first line demand attention?
 2. Value delivery   — Does the post teach, inspire, or provoke thought?
 3. Readability      — Is it scannable? Right length? Good white space?

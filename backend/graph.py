@@ -93,6 +93,7 @@ def build_graph() -> StateGraph:
 
 def run_pipeline(
     user_query: str,
+    skills: list[str] | None = None,    
     max_iterations: int = 2,
 ) -> AgentState:
     """
@@ -109,8 +110,20 @@ def run_pipeline(
     """
     graph = build_graph()
 
+    skill_values = (skills or [
+        "c# development",
+        "AI engineering",
+        "enterprise engineering",
+        "best practices for production deployment",
+    ])[:4]
+    skill_values = skill_values + [""] * (4 - len(skill_values))
+
     initial_state: AgentState = {
         "user_query": user_query,
+        "skill_1": skill_values[0],
+        "skill_2": skill_values[1],
+        "skill_3": skill_values[2],
+        "skill_4": skill_values[3],        
         "current_draft": "",
         "web_research": "",
         "evaluation": "",

@@ -264,6 +264,17 @@ a {
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
+.prompt-form__skills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.prompt-form__field {
+  display: grid;
+  gap: 8px;
+}
+
 .prompt-form textarea:focus {
   border-color: rgba(15, 118, 110, 0.55);
   box-shadow: 0 0 0 5px rgba(15, 118, 110, 0.12);
@@ -273,6 +284,28 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.prompt-form input,
+.prompt-form textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text);
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.prompt-form input {
+  min-height: 46px;
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.prompt-form input:focus,
+.prompt-form textarea:focus {
+  border-color: rgba(15, 118, 110, 0.55);
+  box-shadow: 0 0 0 5px rgba(15, 118, 110, 0.12);
 }
 
 .button {
@@ -504,5 +537,9 @@ a {
 
   .prompt-form textarea {
     min-height: 170px;
+  }
+
+  .prompt-form__skills {
+    grid-template-columns: 1fr;
   }
 }
