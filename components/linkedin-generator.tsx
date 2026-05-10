@@ -24,7 +24,7 @@ export function LinkedInGenerator() {
   const [runs, setRuns] = useState<GenerationRun[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [skills, setSkills] = useState<[string, string, string, string]>([
+  const [skills, setSkills] = useState<string[]>([
     "c# development",
     "AI engineering",
     "enterprise engineering",
@@ -92,13 +92,7 @@ export function LinkedInGenerator() {
           skills={skills}
           isLoading={isLoading}
           onPromptChange={setPrompt}
-          onSkillChange={(index, value) => {
-            setSkills((current) => {
-              const next = [...current] as [string, string, string, string];
-              next[index] = value;
-              return next;
-            });         
-          }} 
+          onSkillsChange={setSkills}
           onSubmit={handleSubmit}
         />
 

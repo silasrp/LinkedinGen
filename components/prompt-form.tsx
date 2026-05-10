@@ -1,20 +1,43 @@
+"use client";
+
+import { useState } from "react";
+
 type PromptFormProps = {
   prompt: string;
-  skills: [string, string, string, string];  
+  skills: string[];
   isLoading: boolean;
   onPromptChange: (value: string) => void;
-  onSkillChange: (index: number, value: string) => void;  
+  onSkillsChange: (skills: string[]) => void;
   onSubmit: () => void;
 };
 
+const MAX_SKILLS = 4;
+
 export function PromptForm({
   prompt,
-  skills,  
+  skills,
   isLoading,
   onPromptChange,
-  onSkillChange,  
+  onSkillsChange,
   onSubmit,
 }: PromptFormProps) {
+  const [skillInput, setSkillInput] = useState("");
+
+  function addSkill(rawValue: string) {
+    const value = rawValue.trim();
+
+    if (!value) return;
+    if (skills.length >= MAX_SKILLS) return;
+    if (skills.some((skill) => skill.toLowerCase() === value.toLowerCase())) return;
+
+    onSkillsChange([...skills, value]);
+    setSkillInput("");
+  }
+
+  function removeSkill(index: number) {
+    onSkillsChange(skills.filter((_, currentIndex) => currentIndex !== index));
+  }
+
   return (
     <form
       className="prompt-form"
@@ -23,37 +46,53 @@ export function PromptForm({
         onSubmit();
       }}
     >
-      <label htmlFor="skill-1">Skill 1</label>
-      <input
-        id="skill-1"
-        value={skills[0]}
-        onChange={(event) => onSkillChange(0, event.target.value)}
-        placeholder="For example: product strategy"
-      />
+      <label htmlFor="skills">Skills</label>
 
-      <label htmlFor="skill-2">Skill 2</label>
-      <input
-        id="skill-2"
-        value={skills[1]}
-        onChange={(event) => onSkillChange(1, event.target.value)}
-        placeholder="For example: growth marketing"
-      />
+      <div className="tag-input" aria-describedby="skills-help">
+        <div className="tag-input__chips">
+          {skills.map((skill, index) => (
+            <span className="tag-chip" key={`${skill}-${index}`}>
+              {skill}
+              <button
+                type="button"
+                className="tag-chip__remove"
+                onClick={() => removeSkill(index)}
+                aria-label={`Remove skill ${skill}`}
+                disabled={isLoading}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
 
-      <label htmlFor="skill-3">Skill 3</label>
-      <input
-        id="skill-3"
-        value={skills[2]}
-        onChange={(event) => onSkillChange(2, event.target.value)}
-        placeholder="For example: AI systems"
-      />
+        <input
+          id="skills"
+          value={skillInput}
+          onChange={(event) => setSkillInput(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === ",") {
+              event.preventDefault();
+              addSkill(skillInput);
+            }
+            if (event.key === "Backspace" && !skillInput && skills.length > 0) {
+              removeSkill(skills.length - 1);
+            }
+          }}
+          onBlur={() => addSkill(skillInput)}
+          placeholder={
+            skills.length >= MAX_SKILLS
+              ? "Maximum 4 skills added"
+              : "Type a skill and press Enter"
+          }
+          disabled={isLoading || skills.length >= MAX_SKILLS}
+          aria-label="Add skill"
+        />
+      </div>
 
-      <label htmlFor="skill-4">Skill 4</label>
-      <input
-        id="skill-4"
-        value={skills[3]}
-        onChange={(event) => onSkillChange(3, event.target.value)}
-        placeholder="For example: leadership"
-      />
+      <p id="skills-help" className="prompt-form__helper">
+        Add up to 4 skills. Press Enter or comma to add one.
+      </p>
 
       <label htmlFor="prompt">What should the post say?</label>
       <textarea
