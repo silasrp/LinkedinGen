@@ -16,7 +16,6 @@ from typing import List, Any
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from dotenv import load_dotenv
 from pathlib import Path
-from backend.state import AgentState
 from state import AgentState
 from langchain_community.tools.tavily_search import TavilySearchResults
 
