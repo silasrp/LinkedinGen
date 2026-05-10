@@ -3,7 +3,7 @@ export function Hero() {
     <section className="hero">
       <p className="hero__eyebrow">LinkedIn studio</p>
       <h1 className="hero__title">
-        A <span className="hero__titleAccent">real React app</span> for writing stronger posts.
+        An <span className="hero__titleAccent">agentic app</span> for writing stronger posts.
       </h1>
       <p className="hero__lede">
         This interface is built as a normal component tree on Vercel, with the generation logic
