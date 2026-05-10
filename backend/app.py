@@ -43,8 +43,9 @@ class handler(BaseHTTPRequestHandler):
 
         try:
             final_state = run_pipeline(prompt.strip(), skills=skills)
-
-            final_post = final_state["final_post"]
-            self._send_json(200, {"finalPost": final_post})
+            self._send_json(200, {
+                "finalPost": final_state["final_post"],
+                "visualContent": final_state.get("visual_content", ""),
+            })
         except Exception as error:
             self._send_json(500, {"error": str(error)})

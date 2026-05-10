@@ -44,11 +44,63 @@ export function OutputFeed({ runs, isLoading, error, onCopy }: OutputFeedProps) 
 
               <div className="run-card__body">
                 <div className="run-card__final">{run.finalPost}</div>
+                {renderVisual(run.visualContent)}
               </div>
             </article>
           ))}
         </div>
       )}
     </section>
+  );
+}
+
+function renderVisual(visualContent?: string) {
+  if (!visualContent) return null;
+
+  let data: any;
+  try {
+    data = JSON.parse(visualContent);
+  } catch {
+    return (
+      <details className="run-section" open>
+        <summary>Visual</summary>
+        <pre className="run-card__visualRaw">{visualContent}</pre>
+      </details>
+    );
+  }
+
+  return (
+    <details className="run-section" open>
+      <summary>Visual</summary>
+      {data?.format ? <p><strong>Format:</strong> {data.format}</p> : null}
+      {data?.rationale ? <p><strong>Why this format:</strong> {data.rationale}</p> : null}
+
+      {Array.isArray(data?.assets) ? (
+        <div className="visual-assets">
+          {data.assets.map((asset: any, index: number) => (
+            <article className="visual-asset" key={index}>
+              {asset.label ? <h4>{asset.label}</h4> : null}
+              {asset.alt_text ? <p>{asset.alt_text}</p> : null}
+
+              {asset.type === "image_url" && typeof asset.content === "string" ? (
+                <img
+                  className="visual-image"
+                  src={asset.content}
+                  alt={asset.alt_text || "Visual asset"}
+                  loading="lazy"
+                />
+              ) : asset.type === "svg" && typeof asset.content === "string" ? (
+                <div
+                  className="visual-svg"
+                  dangerouslySetInnerHTML={{ __html: asset.content }}
+                />
+              ) : (
+                <pre className="run-card__visualRaw">{asset.content}</pre>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : null}
+    </details>
   );
 }

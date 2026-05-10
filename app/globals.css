@@ -473,6 +473,54 @@ a {
   color: var(--text);
 }
 
+.visual-assets {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.visual-asset {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(23, 33, 43, 0.08);
+}
+
+.visual-asset h4 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.visual-asset p {
+  margin: 0;
+  white-space: normal;
+}
+
+.visual-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(23, 33, 43, 0.08);
+  background: white;
+  object-fit: cover;
+}
+
+.visual-svg {
+  width: 100%;
+  overflow: hidden;
+}
+
+.run-card__visualRaw {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
 .run-card__final {
   white-space: pre-wrap;
   line-height: 1.75;

@@ -1,5 +1,6 @@
 export type LinkedInGenerationResult = {
   finalPost: string;
+  visualContent?: string;
 };
 
 export type GenerationRun = LinkedInGenerationResult & {

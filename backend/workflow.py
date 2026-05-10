@@ -83,6 +83,7 @@ def reflection_node(state):
 def should_continue(state: List[BaseMessage]):
     print(state)
     print(len(state["messages"]))
+    print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
     print("----------------------------------------------------------------------")
     if len(state["messages"]) > 6:
         return END

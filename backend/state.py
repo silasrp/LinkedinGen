@@ -24,6 +24,7 @@ class AgentState(TypedDict):
     current_draft     : The LinkedIn post produced / refined by Agent 1.
     web_research      : Structured research summary produced by Agent 2.
     evaluation        : Structured quality feedback produced by Agent 3.
+    visual_content    : Renderable image/carousel payload produced at the end.
     iteration_count   : Number of full cycles completed (0-based before start).
     max_iterations    : Upper-bound on cycles; set once from config / env.
     final_post        : Populated by Agent 1 on the last iteration before END.
@@ -39,6 +40,7 @@ class AgentState(TypedDict):
     current_draft: str
     web_research: str
     evaluation: str
+    visual_content: str
     iteration_count: int
     max_iterations: int
     final_post: str

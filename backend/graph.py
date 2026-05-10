@@ -24,12 +24,13 @@ from typing import Literal
 
 from langgraph.graph import END, START, StateGraph
 
-from agents import (
+from backend.agents import (
     agent_draft_generator,
     agent_quality_evaluator,
+    agent_visual_designer,
     agent_web_researcher,
 )
-from state import AgentState
+from backend.state import AgentState
 
 # ---------------------------------------------------------------------------
 # Node names (constants prevent typos)
@@ -37,20 +38,21 @@ from state import AgentState
 DRAFT_NODE = "draft_generator"
 RESEARCH_NODE = "web_researcher"
 EVAL_NODE = "quality_evaluator"
+VISUAL_NODE = "visual_designer"
 
 
 # ---------------------------------------------------------------------------
 # Conditional edge — decides what comes after Agent 1
 # ---------------------------------------------------------------------------
 
-def should_continue(state: AgentState) -> Literal["web_researcher", "__end__"]:
+def should_continue(state: AgentState) -> Literal["web_researcher", "visual_designer"]:
     """
     Route after Agent 1:
       - If we've completed max_iterations full cycles → END
       - Otherwise → hand off to Agent 2 for research
     """
     if state.get("iteration_count", 0) >= state.get("max_iterations", 2):
-        return END
+        return VISUAL_NODE
     return RESEARCH_NODE
 
 
@@ -66,6 +68,7 @@ def build_graph() -> StateGraph:
     builder.add_node(DRAFT_NODE, agent_draft_generator)
     builder.add_node(RESEARCH_NODE, agent_web_researcher)
     builder.add_node(EVAL_NODE, agent_quality_evaluator)
+    builder.add_node(VISUAL_NODE, agent_visual_designer)
 
     # Entry point
     builder.add_edge(START, DRAFT_NODE)
@@ -76,13 +79,14 @@ def build_graph() -> StateGraph:
         should_continue,
         {
             RESEARCH_NODE: RESEARCH_NODE,
-            END: END,
+            VISUAL_NODE: VISUAL_NODE,
         },
     )
 
     # Linear edges for the research → evaluation → draft cycle
     builder.add_edge(RESEARCH_NODE, EVAL_NODE)
     builder.add_edge(EVAL_NODE, DRAFT_NODE)
+    builder.add_edge(VISUAL_NODE, END)
 
     return builder.compile()
 
@@ -127,6 +131,7 @@ def run_pipeline(
         "current_draft": "",
         "web_research": "",
         "evaluation": "",
+        "visual_content": "",
         "iteration_count": 0,
         "max_iterations": max_iterations,
         "final_post": "",

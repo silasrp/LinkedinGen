@@ -2,7 +2,7 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
-from backend.workflow import generate_post
+from backend.graph import run_pipeline
 
 
 class ApiHandler(BaseHTTPRequestHandler):
@@ -38,13 +38,21 @@ class ApiHandler(BaseHTTPRequestHandler):
             payload = {}
 
         prompt = payload.get("prompt", "")
+        skills = payload.get("skills", [])
+
         if not isinstance(prompt, str) or not prompt.strip():
             self._send_json(400, {"error": "Please enter a prompt before generating a post."})
             return
 
+        if not isinstance(skills, list):
+            skills = []
+
         try:
-            final_post = generate_post(prompt.strip())
-            self._send_json(200, {"finalPost": final_post})
+            final_state = run_pipeline(prompt.strip(), skills=skills)
+            self._send_json(200, {
+                "finalPost": final_state["final_post"],
+                "visualContent": final_state.get("visual_content", ""),
+            })
         except Exception as error:
             self._send_json(500, {"error": str(error)})
 
