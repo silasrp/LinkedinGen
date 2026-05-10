@@ -17,6 +17,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from dotenv import load_dotenv
 from pathlib import Path
 from backend.state import AgentState
+from state import AgentState
 from langchain_community.tools.tavily_search import TavilySearchResults
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
