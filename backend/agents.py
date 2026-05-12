@@ -5,7 +5,8 @@ Agent 1 — Draft Generator  : Writes / refines the LinkedIn post.
 Agent 2 — Web Researcher   : Enriches the draft with live web data.
 Agent 3 — Quality Evaluator: Scores the draft and sends feedback to Agent 1.
 """
-
+import base64
+from openai import OpenAI
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from langgraph.graph import END, StateGraph, MessagesState
@@ -316,14 +317,12 @@ def _attempt_image_generation(prompt: str, size: str) -> str | None:
         return None
 
     try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=api_key)
+        client = OpenAI()
         response = client.images.generate(
             model="gpt-image-2",
             prompt=prompt,
             size=size,  # type: ignore[arg-type]
-            quality="hd",
+            quality="high",
             n=1,
         )
         return response.data[0].url
