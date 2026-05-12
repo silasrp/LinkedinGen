@@ -78,7 +78,7 @@ def agent_draft_generator(state: AgentState) -> dict[str, Any]:
     )    
 
     log_prefix = f"[Cycle {iteration + 1}/{max_iter}] Agent 1 (Draft Generator)"
-
+    print(log_prefix)
     # ---- Build the prompt ------------------------------------------------
     if iteration == 0:
         # First pass — cold start
@@ -160,7 +160,7 @@ def agent_web_researcher(state: AgentState) -> dict[str, Any]:
     max_iter = state.get("max_iterations", 2)
 
     log_prefix = f"[Cycle {iteration}/{max_iter}] Agent 2 (Web Researcher)"
-
+    print(log_prefix)
     # ---- Web search -------------------------------------------------------
     search_tool = TavilySearchResults(
         max_results=5,
@@ -248,7 +248,7 @@ def agent_quality_evaluator(state: AgentState) -> dict[str, Any]:
     max_iter = state.get("max_iterations", 2)
 
     log_prefix = f"[Cycle {iteration}/{max_iter}] Agent 3 (Quality Evaluator)"
-
+    print(log_prefix)
     messages = [
         SystemMessage(content=EVALUATION_SYSTEM),
         HumanMessage(
@@ -323,17 +323,13 @@ def _attempt_image_generation(prompt: str, size: str) -> str | None:
             model="gpt-image-2",
             prompt=prompt,
             size=size,  # type: ignore[arg-type]
-            quality="high",
+            quality="low",
             n=1,
         )
 
         # 2. Decode the Base64 string into raw binary bytes
         image_b64 = response.data[0].b64_json
-        image_bytes = base64.b64decode(image_b64)
-
-        # 3. Return the binary data directly as an image
-        # Your browser now treats this endpoint URL as a real image file
-        return Response(content=image_bytes, media_type="image/png")
+        return f"data:image/png;base64,{image_b64}"
 
     except Exception:  # noqa: BLE001
         return None
@@ -359,6 +355,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
     max_iter = state.get("max_iterations", 2)
 
     log_prefix = f"[Cycle {iteration}/{max_iter}] Agent 4 (Visual Designer)"
+    print(log_prefix)
 
     messages = [
         SystemMessage(content=_VISUAL_SYSTEM),
@@ -427,7 +424,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
                 "alt_text": "Professional LinkedIn hero image",
             }
         ]
-        image_size = "1792x1024"
+        image_size = "1536x1024"
 
     for asset in raw_assets:
         prompt = (
