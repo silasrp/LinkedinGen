@@ -320,7 +320,7 @@ def _attempt_image_generation(prompt: str, size: str) -> str | None:
 
         client = OpenAI(api_key=api_key)
         response = client.images.generate(
-            model="dall-e-3",
+            model="gpt-image-2",
             prompt=prompt,
             size=size,  # type: ignore[arg-type]
             quality="hd",
