@@ -2,12 +2,12 @@ import type { GenerationRun } from "@/lib/types";
 
 type OutputFeedProps = {
   runs: GenerationRun[];
-  isLoading: boolean;
   error: string | null;
+  statusLabel: string;
   onCopy: (value: string) => void;
 };
 
-export function OutputFeed({ runs, isLoading, error, onCopy }: OutputFeedProps) {
+export function OutputFeed({ runs, error, statusLabel, onCopy }: OutputFeedProps) {
   const latestRun = runs[0];
 
   return (
@@ -15,7 +15,7 @@ export function OutputFeed({ runs, isLoading, error, onCopy }: OutputFeedProps) 
       <div className="status-bar">
         <div className="status-badge">
           <span className="status-badge__dot" />
-          {isLoading ? "Writing and refining" : latestRun ? "Latest revision ready" : "Waiting for a prompt"}
+          {statusLabel}
         </div>
         <p className="status-bar__copy">
           {latestRun ? "The newest run appears first, with supporting notes folded underneath." : "Your results will stack here as separate revisions."}

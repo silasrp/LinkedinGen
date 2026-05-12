@@ -1,12 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PromptForm, ART_STYLES, type VisualFormat } from "@/components/prompt-form";
 import { SamplePrompts } from "@/components/sample-prompts";
 import { OutputFeed } from "@/components/output-feed";
 import type { GenerationRun, LinkedInGenerationResult } from "@/lib/types";
 
 type ArtStyle = (typeof ART_STYLES)[number]["title"];
+const MAX_ITERATIONS = 4;
+const PROGRESS_LABELS = buildProgressLabels(MAX_ITERATIONS);
+const PROGRESS_STEP_MS = 1200;
+
+function buildProgressLabels(maxIterations: number) {
+  const labels = ["Drafting... - 1/${MAX_ITERATIONS}"];
+
+  for (let cycle = 1; cycle < maxIterations; cycle += 1) {
+    labels.push(`Cross-Referencing... - Cycle ${cycle}/${MAX_ITERATIONS}`);
+    labels.push(`Evaluating Quality of Response... - Cycle ${cycle}/${MAX_ITERATIONS}`);
+    labels.push(`Applying Observations... - Cycle ${cycle + 1}/${MAX_ITERATIONS}`);
+  }
+
+  labels.push("Creating Illustration...");
+  return labels;
+}
 
 function toRun(prompt: string, result: LinkedInGenerationResult): GenerationRun {
   return {
@@ -34,6 +50,24 @@ export function LinkedInGenerator() {
   ]);
   const [visualFormat, setVisualFormat] = useState<VisualFormat>("single_image");
   const [artStyle, setArtStyle] = useState<ArtStyle>("Cinematic Realism");
+  const [statusLabel, setStatusLabel] = useState("Waiting for a prompt");
+
+  useEffect(() => {
+    if (!isLoading) {
+      setStatusLabel(runs.length > 0 ? "Latest revision ready" : "Waiting for a prompt");
+      return;
+    }
+
+    let index = 0;
+    setStatusLabel(PROGRESS_LABELS[0]);
+
+    const timer = window.setInterval(() => {
+      index = Math.min(index + 1, PROGRESS_LABELS.length - 1);
+      setStatusLabel(PROGRESS_LABELS[index]);
+    }, PROGRESS_STEP_MS);
+
+    return () => window.clearInterval(timer);
+  }, [isLoading, runs.length]);
 
   async function handleSubmit() {
     const cleanPrompt = prompt.trim();
@@ -111,7 +145,12 @@ export function LinkedInGenerator() {
         <SamplePrompts onPick={setPrompt} />
       </div>
 
-      <OutputFeed runs={runs} isLoading={isLoading} error={error} onCopy={handleCopy} />
+      <OutputFeed
+        runs={runs}
+        error={error}
+        statusLabel={statusLabel}
+        onCopy={handleCopy}
+      />
     </section>
   );
 }
