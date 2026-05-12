@@ -14,6 +14,7 @@ from langgraph.graph import END, StateGraph, MessagesState
 import json
 import os
 from typing import List, Any
+from fastapi import FastAPI, Response
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from dotenv import load_dotenv
 from pathlib import Path
@@ -325,7 +326,15 @@ def _attempt_image_generation(prompt: str, size: str) -> str | None:
             quality="high",
             n=1,
         )
-        return response.data[0].url
+
+        # 2. Decode the Base64 string into raw binary bytes
+        image_b64 = response.data[0].b64_json
+        image_bytes = base64.b64decode(image_b64)
+
+        # 3. Return the binary data directly as an image
+        # Your browser now treats this endpoint URL as a real image file
+        return Response(content=image_bytes, media_type="image/png")
+
     except Exception:  # noqa: BLE001
         return None
 
