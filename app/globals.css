@@ -218,6 +218,7 @@ a {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   gap: 16px;
+  align-items: stretch;
 }
 
 .input-card {
@@ -381,8 +382,10 @@ a {
 }
 
 .output-stack {
-  display: grid;
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 16px;  
 }
 
 .status-bar {
@@ -537,6 +540,9 @@ a {
   border: 1px dashed rgba(23, 33, 43, 0.16);
   color: var(--text-soft);
   line-height: 1.7;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;  
 }
 
 .error-banner {
@@ -645,4 +651,94 @@ a {
   color: var(--text-soft);
   font-size: 0.88rem;
   line-height: 1.5;
+}
+
+.prompt-form__group {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.prompt-form__legend {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prompt-form__toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.prompt-form__toggleItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.prompt-form__toggleItem input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.prompt-form__toggleItem.is-active {
+  border-color: rgba(15, 118, 110, 0.55);
+  box-shadow: 0 0 0 5px rgba(15, 118, 110, 0.12);
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--accent-strong);
+}
+
+.prompt-form select,
+.prompt-form input,
+.prompt-form textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text);
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.prompt-form select {
+  min-height: 46px;
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.prompt-form__styleHelp {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.68);
+  padding: 12px 14px;
+}
+
+.prompt-form__styleHelp summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prompt-form__styleHelpBody {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.prompt-form__styleHelpBody p {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--text-soft);
 }

@@ -285,7 +285,7 @@ def agent_quality_evaluator(state: AgentState) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 _VISUAL_SYSTEM = """You are a visual strategist for LinkedIn.
-Given the final LinkedIn post, choose the most faithful supporting visual.
+Given the final LinkedIn post and the user’s explicit visual preferences, generate the supporting image prompts.
 
 Return ONLY valid JSON (no markdown fences) in this exact format:
 {
@@ -304,10 +304,10 @@ Return ONLY valid JSON (no markdown fences) in this exact format:
 }
 
 Rules:
-- Use "single_image" when one strong image can carry the message.
-- Use "carousel" when the post has 3 distinct beats that should be shown as a sequence.
+- Follow the requested format exactly.
 - For single_image, return exactly 1 asset.
 - For carousel, return exactly 3 assets.
+- Use the requested art style in the image prompt.
 - Do not include text overlays inside the image.
 - Keep the imagery professional, polished, and faithful to the post."""
 
@@ -353,6 +353,8 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
     query = state.get("user_query", "")
     iteration = state.get("iteration_count", 1)
     max_iter = state.get("max_iterations", 2)
+    requested_format = state.get("visual_format", "single_image")
+    art_style = state.get("art_style", "Cinematic Realism")    
 
     log_prefix = f"[Cycle {iteration}/{max_iter}] Agent 4 (Visual Designer)"
     print(log_prefix)
@@ -363,7 +365,9 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
             content=(
                 f"Topic:\n{query}\n\n"
                 f"Final LinkedIn post:\n{final_post}\n\n"
-                "Choose the best visual format and give image prompts."
+                f"Requested visual format:\n{requested_format}\n\n"
+                f"Requested art style:\n{art_style}\n\n"
+                "Generate image prompts that obey the requested format and style."
             )
         ),
     ]
@@ -373,7 +377,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
         brief = json.loads(response.content.strip())
     except json.JSONDecodeError:
         brief = {
-            "format": "single_image",
+            "format": requested_format,
             "rationale": "Fallback because the model did not return valid JSON.",
             "tone": "professional",
             "assets": [
@@ -381,16 +385,13 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
                     "slide_number": 1,
                     "headline": "Featured visual",
                     "body": "",
-                    "image_prompt": (
-                        f"Professional LinkedIn hero image inspired by this post: {final_post}. "
-                        "Clean composition, no text overlays, polished and modern."
-                    ),
-                    "alt_text": "Professional LinkedIn hero image",
+                    "image_prompt": f"Professional LinkedIn visual inspired by: {final_post}. Art style: {art_style}. Clean composition, no text overlays, polished and modern.",
+                    "alt_text": "Professional LinkedIn visual",
                 }
             ],
         }
 
-    chosen_format = brief.get("format", "single_image")
+    chosen_format = requested_format if requested_format in {"single_image", "carousel"} else "single_image"
     assets: list[dict[str, Any]] = []
     raw_assets = brief.get("assets", []) if isinstance(brief.get("assets", []), list) else []
 
@@ -403,10 +404,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
                     "slide_number": slide_number,
                     "headline": f"Key point {slide_number}",
                     "body": "",
-                    "image_prompt": (
-                        f"Professional LinkedIn carousel slide {slide_number} inspired by: {final_post}. "
-                        "No text overlays, clean modern editorial style."
-                    ),
+                    "image_prompt": f"Professional LinkedIn carousel slide {slide_number} inspired by: {final_post}. Art style: {art_style}. No text overlays, clean modern editorial style.",
                     "alt_text": f"Carousel slide {slide_number}",
                 }
             )
@@ -417,10 +415,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
                 "slide_number": 1,
                 "headline": "Featured visual",
                 "body": "",
-                "image_prompt": (
-                    f"Professional LinkedIn hero image inspired by this post: {final_post}. "
-                    "Clean composition, no text overlays, polished and modern."
-                ),
+                "image_prompt": f"Professional LinkedIn hero image inspired by this post: {final_post}. Art style: {art_style}. Clean composition, no text overlays, polished and modern.",
                 "alt_text": "Professional LinkedIn hero image",
             }
         ]
@@ -435,6 +430,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
         )
         styled_prompt = (
             f"{prompt} Style: {brief.get('tone', 'professional')}. "
+            f"Art style: {art_style}. "
             "No text in the image, no logos, no watermarks, high quality, "
             "suitable for a LinkedIn audience."
         )
@@ -458,6 +454,7 @@ def agent_visual_designer(state: AgentState) -> dict[str, Any]:
     visual_content = json.dumps(
         {
             "format": chosen_format,
+            "art_style": art_style,
             "rationale": brief.get("rationale", ""),
             "tone": brief.get("tone", ""),
             "assets": assets,

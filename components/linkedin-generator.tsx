@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { PromptForm } from "@/components/prompt-form";
+import { PromptForm, ART_STYLES, type VisualFormat } from "@/components/prompt-form";
 import { SamplePrompts } from "@/components/sample-prompts";
 import { OutputFeed } from "@/components/output-feed";
 import type { GenerationRun, LinkedInGenerationResult } from "@/lib/types";
+
+type ArtStyle = (typeof ART_STYLES)[number]["title"];
 
 function toRun(prompt: string, result: LinkedInGenerationResult): GenerationRun {
   return {
@@ -30,7 +32,8 @@ export function LinkedInGenerator() {
     "enterprise engineering",
     "best practices for production deployment",
   ]);
-
+  const [visualFormat, setVisualFormat] = useState<VisualFormat>("single_image");
+  const [artStyle, setArtStyle] = useState<ArtStyle>("Cinematic Realism");
 
   async function handleSubmit() {
     const cleanPrompt = prompt.trim();
@@ -48,7 +51,12 @@ export function LinkedInGenerator() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: cleanPrompt, skills, }),
+        body: JSON.stringify({
+          prompt: cleanPrompt,
+          skills,
+          visualFormat,
+          artStyle,
+        }),
       });
 
       const contentType = response.headers.get("content-type") || "";
@@ -90,9 +98,13 @@ export function LinkedInGenerator() {
         <PromptForm
           prompt={prompt}
           skills={skills}
+          visualFormat={visualFormat}
+          artStyle={artStyle}          
           isLoading={isLoading}
           onPromptChange={setPrompt}
           onSkillsChange={setSkills}
+          onVisualFormatChange={setVisualFormat}
+          onArtStyleChange={setArtStyle}          
           onSubmit={handleSubmit}
         />
 

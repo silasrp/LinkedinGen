@@ -39,6 +39,8 @@ class ApiHandler(BaseHTTPRequestHandler):
 
         prompt = payload.get("prompt", "")
         skills = payload.get("skills", [])
+        visual_format = payload.get("visualFormat", "single_image")
+        art_style = payload.get("artStyle", "Cinematic Realism")        
 
         if not isinstance(prompt, str) or not prompt.strip():
             self._send_json(400, {"error": "Please enter a prompt before generating a post."})
@@ -47,8 +49,14 @@ class ApiHandler(BaseHTTPRequestHandler):
         if not isinstance(skills, list):
             skills = []
 
+        if visual_format not in {"single_image", "carousel"}:
+            visual_format = "single_image"            
+
+        if not isinstance(art_style, str) or not art_style.strip():
+            art_style = "Cinematic Realism"
+
         try:
-            final_state = run_pipeline(prompt.strip(), skills=skills)
+            final_state = run_pipeline(prompt.strip(), skills=skills, visual_format=visual_format, art_style=art_style)
             self._send_json(200, {
                 "finalPost": final_state["final_post"],
                 "visualContent": final_state.get("visual_content", ""),

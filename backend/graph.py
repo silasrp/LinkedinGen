@@ -97,8 +97,10 @@ def build_graph() -> StateGraph:
 
 def run_pipeline(
     user_query: str,
-    skills: list[str] | None = None,    
-    max_iterations: int = 2,
+    skills: list[str] | None = None,
+    visual_format: str = "single_image",
+    art_style: str = "Cinematic Realism",        
+    max_iterations: int = 4,
 ) -> AgentState:
     """
     Execute the full LinkedIn generation pipeline.
@@ -127,7 +129,9 @@ def run_pipeline(
         "skill_1": skill_values[0],
         "skill_2": skill_values[1],
         "skill_3": skill_values[2],
-        "skill_4": skill_values[3],        
+        "skill_4": skill_values[3],
+        "visual_format": visual_format,
+        "art_style": art_style,                
         "current_draft": "",
         "web_research": "",
         "evaluation": "",

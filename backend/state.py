@@ -37,6 +37,8 @@ class AgentState(TypedDict):
     skill_2: str
     skill_3: str
     skill_4: str    
+    visual_format: str
+    art_style: str    
     current_draft: str
     web_research: str
     evaluation: str

@@ -73,6 +73,7 @@ function renderVisual(visualContent?: string) {
     <details className="run-section" open>
       <summary>Visual</summary>
       {data?.format ? <p><strong>Format:</strong> {data.format}</p> : null}
+      {data?.art_style ? <p><strong>Art style:</strong> {data.art_style}</p> : null}      
       {data?.rationale ? <p><strong>Why this format:</strong> {data.rationale}</p> : null}
 
       {Array.isArray(data?.assets) ? (
