@@ -45,6 +45,7 @@ export function OutputFeed({ runs, error, statusLabel, onCopy }: OutputFeedProps
               <div className="run-card__body">
                 <div className="run-card__final">{run.finalPost}</div>
                 {renderVisual(run.visualContent)}
+                {renderReferences(run.references)}
               </div>
             </article>
           ))}
@@ -105,3 +106,23 @@ function renderVisual(visualContent?: string) {
     </details>
   );
 }
+
+function renderReferences(references?: string[]) {
+  if (!references?.length) return null;
+
+  return (
+    <details className="run-section" open>
+      <summary>References</summary>
+      <ol className="reference-list">
+        {references.map((reference, index) => (
+          <li key={`${reference}-${index}`}>
+            <a href={reference} target="_blank" rel="noreferrer noopener">
+              {reference}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  );
+}
+

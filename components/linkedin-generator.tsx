@@ -17,7 +17,7 @@ function buildProgressLabels(maxIterations: number) {
   for (let cycle = 1; cycle < maxIterations; cycle += 1) {
     labels.push(`Cross-Referencing... - Cycle ${cycle}/${MAX_ITERATIONS}`);
     labels.push(`Evaluating Quality of Response... - Cycle ${cycle}/${MAX_ITERATIONS}`);
-    labels.push(`Applying Observations... - Cycle ${cycle + 1}/${MAX_ITERATIONS}`);
+    labels.push(`Refining... - Cycle ${cycle + 1}/${MAX_ITERATIONS}`);
   }
 
   labels.push("Creating Illustration...");

@@ -46,5 +46,6 @@ class AgentState(TypedDict):
     iteration_count: int
     max_iterations: int
     final_post: str
+    web_references: Annotated[list[str], lambda old, new: old + new]
     messages: Annotated[list[BaseMessage], add_messages]
     agent_log: Annotated[list[str], lambda old, new: old + new]

@@ -139,6 +139,7 @@ def run_pipeline(
         "iteration_count": 0,
         "max_iterations": max_iterations,
         "final_post": "",
+        "web_references": [],
         "messages": [],
         "agent_log": [],
     }

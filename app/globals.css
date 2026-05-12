@@ -744,3 +744,16 @@ a {
   line-height: 1.55;
   color: var(--text-soft);
 }
+
+.reference-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  word-break: break-word;
+}
+
+.reference-list a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}

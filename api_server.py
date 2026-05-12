@@ -60,6 +60,7 @@ class ApiHandler(BaseHTTPRequestHandler):
             self._send_json(200, {
                 "finalPost": final_state["final_post"],
                 "visualContent": final_state.get("visual_content", ""),
+                "references": final_state.get("web_references", []),
             })
         except Exception as error:
             self._send_json(500, {"error": str(error)})

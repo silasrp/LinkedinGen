@@ -148,6 +148,14 @@ Return a structured research report in this exact JSON format (no markdown fence
   "research_summary": "2-3 sentence plain-English summary"
 }"""
 
+def _extract_references(search_results: list[dict[str, Any]]) -> list[str]:
+    refs: list[str] = []
+    for result in search_results:
+        url = result.get("url")
+        if isinstance(url, str) and url.strip():
+            refs.append(url.strip())
+    return list(dict.fromkeys(refs))
+
 
 def agent_web_researcher(state: AgentState) -> dict[str, Any]:
     """
@@ -167,6 +175,7 @@ def agent_web_researcher(state: AgentState) -> dict[str, Any]:
         tavily_api_key=os.environ["TAVILY_API_KEY"],
     )
     search_results = search_tool.invoke({"query": f"{query} latest insights statistics"})
+    pass_references = _extract_references(search_results)
     formatted_results = "\n\n".join(
         f"Source: {r.get('url', 'N/A')}\n{r.get('content', '')}"
         for r in search_results
@@ -198,6 +207,7 @@ def agent_web_researcher(state: AgentState) -> dict[str, Any]:
 
     return {
         "web_research": web_research,
+        "web_references": pass_references,
         "messages": [AIMessage(content=web_research, name="WebResearcher")],
         "agent_log": [log_msg],
     }
